@@ -2,6 +2,7 @@ import flask
 import sqlite3
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from better_profanity import profanity
 
 app = flask.Flask(
     __name__,
@@ -15,6 +16,13 @@ limiter = Limiter(
     default_limits=["100 per day"],
     storage_uri="memory://",
 )
+
+banned_ips = set()
+
+@app.before_request
+def check_banned():
+    if flask.request.remote_addr in banned_ips:
+        flask.abort(403)
 
 conn = sqlite3.connect('gifts.db') 
 cursor = conn.cursor()  
@@ -33,13 +41,22 @@ conn.close()
 def index():
     return flask.send_from_directory("static", "index.html")
 
+@app.get("/forbidden")
+@limiter.exempt
+def forbidden():
+    return flask.abort(403)
+
 @app.post("/gifts")
 @limiter.limit("10 per hour")
 def create_gift():
     data = flask.request.get_json()
     name = data.get('name')
     gift = data.get('gift')
-    
+
+    if profanity.contains_profanity(name) or profanity.contains_profanity(gift):
+        banned_ips.add(flask.request.remote_addr)
+        return flask.redirect("/forbidden")
+
     conn = sqlite3.connect('gifts.db')
     cursor = conn.cursor()
     cursor.execute('INSERT INTO gifts (name, gift) VALUES (?, ?)', (name, gift))
