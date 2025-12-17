@@ -19,6 +19,37 @@ body {
     padding: 20px;
 }
 
+img {
+    width: 25%;
+}
+
+.exclamation {
+    opacity: 0.5;
+}
+
+input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    color: black;
+    margin: 5px 0;
+}
+
+input[type="submit"] {
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    color: black;
+    cursor: pointer;
+    margin: 5px 0;
+}
+
+input[type="submit"]:hover {
+    background-color: #f5f5f5;
+}
+
 .gift-item {
     display: flex;
     justify-content: center;
@@ -49,5 +80,23 @@ body {
         background-color: #333;
         color: white;
         border-color: #666;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    input[type="text"] {
+        background-color: #333;
+        color: white;
+        border-color: #666;
+    }
+
+    input[type="submit"] {
+        background-color: #333;
+        color: white;
+        border-color: #666;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #444;
     }
 }
