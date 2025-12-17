@@ -1,5 +1,6 @@
 import flask
 import sqlite3
+import os
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_socketio import SocketIO, emit
@@ -102,5 +103,25 @@ def get_gifts():
     gifts = [{'id': row[0], 'name': row[1], 'gift': row[2], 'fulfilled': bool(row[3])} for row in rows]
     return flask.jsonify(gifts)
 
+@app.get("/reset")
+@limiter.exempt
+def reset():
+    if os.path.exists('gifts.db'):
+        os.remove('gifts.db')
+    conn = sqlite3.connect('gifts.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE gifts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            gift TEXT NOT NULL,
+            fulfilled INTEGER DEFAULT 0
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+    return flask.redirect("/")
+
 if __name__ == "__main__":
-    socketio.run(app)
+    socketio.run(app, host="0.0.0.0")
