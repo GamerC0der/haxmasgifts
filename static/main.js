@@ -1,7 +1,46 @@
 const form = document.getElementById("giftForm")
 const giftsContainer = document.getElementById("gifts");
+const timeTracker = document.getElementById("timeTracker");
 
 const socket = io();
+
+function updateTimeTracker() {
+    const startDate = new Date('2025-12-17T21:35:00.000Z');
+    const now = new Date();
+    const diffMs = now - startDate;
+
+    if (diffMs < 0) {
+        timeTracker.textContent = "Tracking gifts since 2025";
+        return;
+    }
+
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    const diffMonths = Math.floor(diffDays / 30.44);
+    const diffYears = Math.floor(diffDays / 365.25);
+
+    let timeText = "Tracking gifts since ";
+    if (diffYears > 0) {
+        timeText += `${diffYears} year${diffYears > 1 ? 's' : ''} ago`;
+    } else if (diffMonths > 0) {
+        timeText += `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
+    } else if (diffDays > 0) {
+        timeText += `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    } else if (diffHours > 0) {
+        timeText += `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    } else if (diffMinutes > 0) {
+        timeText += `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
+    } else {
+        timeText += `${diffSeconds} second${diffSeconds > 1 ? 's' : ''} ago`;
+    }
+
+    timeTracker.textContent = timeText;
+}
+
+setInterval(updateTimeTracker, 1000);
+updateTimeTracker();
 
 async function loadGifts() {
     const response = await fetch('/gifts');
