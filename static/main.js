@@ -23,25 +23,33 @@ function updateTimeTracker() {
 
     let timeText = "Tracking gifts since ";
     if (diffYears > 0) {
-        timeText += `${diffYears} year${diffYears > 1 ? 's' : ''} ago`;
+        timeText += `${diffYears} year${diffYears > 1 ? 's' : ''}, `;
+        timeText += `${diffMonths % 12} month${(diffMonths % 12) > 1 ? 's' : ''}, `;
+        timeText += `${diffDays % 30} day${(diffDays % 30) > 1 ? 's' : ''}`;
     } else if (diffMonths > 0) {
-        timeText += `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
+        timeText += `${diffMonths} month${diffMonths > 1 ? 's' : ''}, `;
+        timeText += `${diffDays % 30} day${(diffDays % 30) > 1 ? 's' : ''}`;
     } else if (diffDays > 0) {
-        timeText += `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+        timeText += `${diffDays} day${diffDays > 1 ? 's' : ''}, `;
+        timeText += `${diffHours % 24} hour${(diffHours % 24) > 1 ? 's' : ''}, `;
+        timeText += `${diffMinutes % 60} minute${(diffMinutes % 60) > 1 ? 's' : ''}`;
     } else if (diffHours > 0) {
-        timeText += `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+        timeText += `${diffHours} hour${diffHours > 1 ? 's' : ''}, `;
+        timeText += `${diffMinutes % 60} minute${(diffMinutes % 60) > 1 ? 's' : ''}`;
     } else if (diffMinutes > 0) {
-        timeText += `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
+        timeText += `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''}, `;
+        timeText += `${diffSeconds % 60} second${(diffSeconds % 60) > 1 ? 's' : ''}`;
     } else {
-        timeText += `${diffSeconds} second${diffSeconds > 1 ? 's' : ''} ago`;
+        timeText += `${diffSeconds} second${diffSeconds > 1 ? 's' : ''}`;
     }
 
-    timeTracker.textContent = timeText;
+    timeTracker.textContent = timeText + " ago";
 }
 
 setInterval(updateTimeTracker, 1000);
 updateTimeTracker();
 
+// Rest of your code remains exactly the same...
 async function loadGifts() {
     const response = await fetch('/gifts');
     const gifts = await response.json();
