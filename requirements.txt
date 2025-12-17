@@ -1,4 +1,5 @@
 flask
 Flask-Limiter
+flask-socketio
 gunicorn
 better-profanity
